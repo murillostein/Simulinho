@@ -10,7 +10,8 @@ data = pd.read_pickle('dados-relatorio-alunos/data.pkl')
 
 st.title('Relatório Docentes')
 
-
+st.write('Olá Docente!')
+st.write("Este é o seu relatório do Simulinho 2021. Aqui você encontra dados sobre a prova geral e dados específicos para cada disciplina.")
 # ! dados gerais !
 
 # número de inscritos
@@ -27,7 +28,7 @@ media_pontuacao_total = round(pontuacao_total['Nota total'].mean(),1)
 media_porcem_total = str(round(media_pontuacao_total / 1500, 1)*100) + '%'
 # media_porcem_total = media_porcem_total.astype()
 # print(media_porcem_total)
-st.header("**Dados sobre a Prova Geral**")
+st.header("**1. Dados sobre a Prova Geral**")
 dados = {
     'Total de Inscritos': [total_presentes],
     'Média de Pontuação Total':[media_pontuacao_total],
@@ -40,7 +41,7 @@ media_acerto_materia = pd.read_pickle('dados-relatorio-docentes/media_acerto_mat
 media_acertos_obj = media_acerto_materia['correcao'].mean()
 
 # print(media_acertos_obj)
-st.subheader("**Dados sobre as Questões Objetivas**")
+st.subheader("**1.1 Dados sobre as Questões Objetivas**")
 
 st.write("A média de acertos da prova objetiva foi: ", str(round(media_acertos_obj, 1)*100)+'%')
 st.write(pd.DataFrame({
@@ -50,8 +51,10 @@ st.write(pd.DataFrame({
 def get_media_a_m():
     path = 'dados-relatorio-docentes/media_acerto_materia.pkl'
     return pd.read_pickle(path)
+    
 
-st.subheader("Média de acertos por matéria (em %)")
+st.markdown("**Média de acertos por matéria (em %)**")
+
 media_acerto_materia = get_media_a_m()
 media_acerto_materia = media_acerto_materia.reset_index()
 
@@ -77,7 +80,7 @@ media_redacao = pd.read_pickle('dados-relatorio-docentes/media_redacao.pkl')
 # print(media_redacao)
 
 # tabela com os dados coletados acima
-st.subheader("**Dados sobre a Redação**")
+st.subheader("**1.2 Dados sobre a Redação**")
 st.write(pd.DataFrame({
     'Nota Média': media_redacao
 }))
@@ -86,7 +89,7 @@ st.write(pd.DataFrame({
 # tabela com a colocação dos alunos
 
 colocacao = pd.read_pickle('dados-relatorio-alunos/colocacao.pkl')
-st.subheader("Colocação dos alunos do Einstein")
+st.subheader("**1.3   Colocação dos alunos do Einstein**")
 st.write(pd.DataFrame({
     'Nome': colocacao['nome'],
     'Pontos': colocacao['Nota total'],
@@ -118,7 +121,7 @@ dados_materia_escolhida = media_acerto_materia[(media_acerto_materia['materia'] 
 # para nao mostrar on indices do dataframe na tabela do streamlit, podemos mudar o indice
 dados_materia_escolhida.set_index('materia',inplace=True)
 
-st.header("**Dados sobre a Matéria Selecionada**")
+st.header("**2. Dados sobre a Matéria Selecionada**")
 
 
 # st.write("A média em ", str(dados_materia_escolhida.index), " foi ", dados_materia_escolhida['correcao'])
@@ -132,8 +135,8 @@ st.write(pd.DataFrame({
 # #  tem o total de acertos, total de alunos que responderam e média de acerto
 media_acerto_questao = pd.read_pickle('dados-relatorio-docentes/media_acerto_questao.pkl')
 
-st.subheader("Média de acertos por questao")
-
+st.subheader("**2.1   Média de acertos por questao**")
+st.write("Nesta seção são discretizados os acertos por questão")
 media_acerto_questao = media_acerto_questao.reset_index()
 questao_materia_escolhida = media_acerto_questao[(media_acerto_questao['materia'] == materia_escolhida)]
 
@@ -166,7 +169,7 @@ assuntos_materia_escolhida = media_por_assunto[(media_por_assunto['materia'] == 
 # para nao mostrar on indices do dataframe na tabela do streamlit, podemos mudar o indice
 assuntos_materia_escolhida.set_index('assunto',inplace=True)
 
-st.subheader("Média de acertos por assunto")
+st.subheader("**2.2   Média de acertos por assunto**")
 
 st.write(pd.DataFrame({
     "Total Acertos": assuntos_materia_escolhida['correcao','Total Acertos'],
@@ -179,7 +182,7 @@ st.write(pd.DataFrame({
 # analise dos acertos por dificuldade
 media_por_dificuldade = pd.read_pickle('dados-relatorio-docentes/media_por_dificuldade.pkl')
 
-st.subheader("Média de acertos por dificuldade")
+st.subheader("**2.3   Média de acertos por dificuldade**")
 
 media_por_dificuldade = media_por_dificuldade.reset_index()
 dificuldade_materia_escolhida = media_por_dificuldade[(media_por_dificuldade['materia'] == materia_escolhida)]
