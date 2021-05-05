@@ -73,7 +73,7 @@ media_acerto_materia = get_media_a_m()
 # gráfico com a média de acerto de cada matéria
 
 media_acerto_materia = media_acerto_materia.reset_index()
-media_acerto_materia=  media_acerto_materia.set_index('correcao')
+media_acerto_materia = media_acerto_materia.set_index('correcao')
 
 st.bar_chart(data=media_acerto_materia)
 
@@ -145,11 +145,18 @@ questao_materia_escolhida = media_acerto_questao[(media_acerto_questao['materia'
 
 # para nao mostrar on indices do dataframe na tabela do streamlit, podemos mudar o indice
 questao_materia_escolhida.set_index('questao',inplace=True)
-st.table(data=questao_materia_escolhida['correcao'])
+
+questao_materia_escolhida['Acertos'] = questao_materia_escolhida['correcao','Total Acertos'].astype(str)
+questao_materia_escolhida['Respostas'] = questao_materia_escolhida['correcao','Total Respostas'].astype(str)
+questao_materia_escolhida ["Total Acertos"]= questao_materia_escolhida[['Acertos', 'Respostas']].agg('/'.join, axis=1)
+questao_materia_escolhida["Média"] = questao_materia_escolhida['correcao', 'Média']
 # print(questao_materia_escolhida)
+st.table(data=questao_materia_escolhida[['assunto','dificuldade','Total Acertos', 'Média']])
+print(questao_materia_escolhida)
 st.write(pd.DataFrame({
-    "Total Acertos": questao_materia_escolhida['correcao','Total Acertos'],
-    'Total Respostas': questao_materia_escolhida['correcao','Total Respostas'],
+    "Assunto": questao_materia_escolhida['assunto'],
+    "Dificuldade": questao_materia_escolhida['dificuldade'],
+    "Total Acertos": questao_materia_escolhida['Total Acertos'],
     'Média (em %)': round(questao_materia_escolhida['correcao', 'Média']*100, 1)
 }))
 
