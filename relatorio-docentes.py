@@ -147,8 +147,8 @@ questao_materia_escolhida = media_acerto_questao[(media_acerto_questao['materia'
 questao_materia_escolhida.set_index('questao',inplace=True)
 
 
-# print(questao_materia_escolhida)
-st.table(data=questao_materia_escolhida[['assunto','dificuldade','Total Acertos', 'Média']])
+print(questao_materia_escolhida)
+st.table(data=questao_materia_escolhida[['assunto','dificuldade', 'Média']])
 
 
 st.write(pd.DataFrame({
