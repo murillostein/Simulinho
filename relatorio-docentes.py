@@ -3,7 +3,6 @@ import numpy as np
 import streamlit as st
 import PIL
 
-
 data = pd.read_pickle('dados-relatorio-alunos/data.pkl')
 # 
 
@@ -73,6 +72,9 @@ media_acerto_materia = get_media_a_m()
 
 # gráfico com a média de acerto de cada matéria
 
+media_acerto_materia = media_acerto_materia.reset_index()
+media_acerto_materia.set_index('correcao',inplace=True)
+
 st.bar_chart(data=media_acerto_materia)
 
 # media e % da redação
@@ -90,6 +92,7 @@ st.write(pd.DataFrame({
 
 colocacao = pd.read_pickle('dados-relatorio-alunos/colocacao.pkl')
 st.subheader("**1.3   Colocação dos alunos do Einstein**")
+colocacao.set_index('Colocação',inplace=True)
 st.write(pd.DataFrame({
     'Nome': colocacao['nome'],
     'Pontos': colocacao['Nota total'],
@@ -143,16 +146,22 @@ questao_materia_escolhida = media_acerto_questao[(media_acerto_questao['materia'
 # para nao mostrar on indices do dataframe na tabela do streamlit, podemos mudar o indice
 questao_materia_escolhida.set_index('questao',inplace=True)
 st.table(data=questao_materia_escolhida['correcao'])
-
+# print(questao_materia_escolhida)
 st.write(pd.DataFrame({
     "Total Acertos": questao_materia_escolhida['correcao','Total Acertos'],
-    'Total Respostas': questao_materia_escolhida['correcao','Total Alunos'],
+    'Total Respostas': questao_materia_escolhida['correcao','Total Respostas'],
     'Média (em %)': round(questao_materia_escolhida['correcao', 'Média']*100, 1)
 }))
 
-# st.write(pd.DataFrame({
-  #  'Média de Acerto (em %)': round(questao_materia_escolhida['correcao']*100, 1)
-#}))
+grafico_questoes = questao_materia_escolhida['correcao','Média']
+grafico_questoes = grafico_questoes.reset_index()
+grafico_questoes['questao'] = grafico_questoes['questao'].astype(str)
+grafico_questoes["media"] = grafico_questoes['correcao','Média']
+# grafico_questoes = grafico.drop(columns=('correcao','Média'))
+grafico_questoes.set_index('questao',inplace=True)
+
+st.bar_chart(data=grafico_questoes['media'])
+
 
 # questões separadas por materia e por assunto
 # #  tem o total de acertos, total de alunos que responderam e média de acerto
@@ -173,7 +182,7 @@ st.subheader("**2.2   Média de acertos por assunto**")
 
 st.write(pd.DataFrame({
     "Total Acertos": assuntos_materia_escolhida['correcao','Total Acertos'],
-    'Total Respostas': assuntos_materia_escolhida['correcao','Total Questões'],
+    'Total Respostas': assuntos_materia_escolhida['correcao','Total Respostas'],
     'Média (em %)': round(assuntos_materia_escolhida['correcao','Média']*100,3)
 }))
 
@@ -193,6 +202,6 @@ dificuldade_materia_escolhida.set_index('dificuldade',inplace=True)
 
 st.write(pd.DataFrame({
     "Total Acertos": dificuldade_materia_escolhida['correcao','Total Acertos'],
-    'Total Respostas': dificuldade_materia_escolhida['correcao','Total Alunos'],
+    'Total Respostas': dificuldade_materia_escolhida['correcao','Total Respostas'],
     'Média (em %)': round(dificuldade_materia_escolhida['correcao','Média']*100,3)		
 }))
