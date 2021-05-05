@@ -75,7 +75,7 @@ media_acerto_materia = get_media_a_m()
 media_acerto_materia = media_acerto_materia.reset_index()
 media_acerto_materia = media_acerto_materia.set_index('correcao')
 
-st.bar_chart(data=media_acerto_materia)
+st.bar_chart(data=media_acerto_materia[["materia"]])
 
 # media e % da redação
 media_redacao = pd.read_pickle('dados-relatorio-docentes/media_redacao.pkl')
@@ -152,7 +152,8 @@ questao_materia_escolhida ["Total Acertos"]= questao_materia_escolhida[['Acertos
 questao_materia_escolhida["Média"] = questao_materia_escolhida['correcao', 'Média']
 # print(questao_materia_escolhida)
 st.table(data=questao_materia_escolhida[['assunto','dificuldade','Total Acertos', 'Média']])
-print(questao_materia_escolhida)
+
+
 st.write(pd.DataFrame({
     "Assunto": questao_materia_escolhida['assunto'],
     "Dificuldade": questao_materia_escolhida['dificuldade'],
