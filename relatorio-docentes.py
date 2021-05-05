@@ -73,7 +73,7 @@ media_acerto_materia = get_media_a_m()
 # gráfico com a média de acerto de cada matéria
 
 media_acerto_materia = media_acerto_materia.reset_index()
-media_acerto_materia.set_index('correcao',inplace=True)
+media_acerto_materia=  media_acerto_materia.set_index('correcao')
 
 st.bar_chart(data=media_acerto_materia)
 
@@ -114,7 +114,7 @@ st.write(pd.DataFrame({
 # # tem o total de acertos, total de alunos que responderam e média de acerto
 
 # print(media_acerto_materia)
-
+media_acerto_materia = get_media_a_m()
 media_acerto_materia = media_acerto_materia.reset_index()
 
 materia_escolhida = st.sidebar.selectbox("Escolha a materia", media_acerto_materia['materia'])
