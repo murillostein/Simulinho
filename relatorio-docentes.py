@@ -148,7 +148,7 @@ questao_materia_escolhida.set_index('questao',inplace=True)
 
 
 print(questao_materia_escolhida)
-st.table(data=questao_materia_escolhida[['assunto','dificuldade', 'Média']])
+# st.table(data=questao_materia_escolhida[['assunto','dificuldade', 'Média']])
 
 
 st.write(pd.DataFrame({
