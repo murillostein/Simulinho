@@ -6,12 +6,12 @@
  -->
 
 
-<html>
-<head>
-    <page size="A4"></page>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <style>
+ <html lang="pt-br">
+    <head>
+      <page size="A4"></page>
+      <meta charset="UTF-8" />
+      <meta http-equiv="Content-Type" content="text/html" />
+      <style>
 
 @font-face {
     font-family: "Roboto", sans-serif;
@@ -137,10 +137,21 @@ h3 {
 
     <hr class='section'>
 
+    <center><h2 class='title'>Dados Pessoais</h2></center>
+    <center>{{pessoal | safe}}</center>
+    <br><br><br>
+
+    <hr class='section'>
+
     <center><h2 class='title'>Desempenho Geral</h2></center>
     <center>{{notas | safe}}</center>
     <br><br><br>
+    <hr class='section'>
 
+
+    <center><h2 class='title'>Redação</h2></center>
+    <center>{{redacao | safe}}</center>
+    <br><br><br>
     <!--<center>
     <figure> É GRPAFICO, SIMULINHO NÃO TEM
         <img src= "{{grafico_path | safe}}"/>
@@ -159,11 +170,6 @@ h3 {
     
     
     
-    <hr class='section'>
-
-
-    <center><h2 class='title'>Redação</h2></center>
-    <center>{{redacao.Nota | safe}}</center>
-    <br><br><br>
+    
 </body>
 </html>
