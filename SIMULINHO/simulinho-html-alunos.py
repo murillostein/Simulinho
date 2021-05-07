@@ -13,13 +13,20 @@ def _color_correction(data):
 
 def _color_table_every_other(data):
     df = data.copy()
-    # print(len(df))
     n = len(df)
     df.iloc[range(0,n,2), :] = 'background-color: #f5f5dc'
     df.iloc[range(1,n,2), :] = 'background-color: #f0f0ce'
     df.iloc[-1,:] += '; font-weight: bold'
-    
     return df
+
+def _color_table_redacao(data):
+    df = data.copy()
+    n = len(df)
+    # print(df.iloc[0:5,0:3])
+    df.iloc[0:6,0:3] = 'background-color: #f0f0ce'
+    df.iloc[-1] += '; font-weight: bold'
+    return df
+
 
 # carrega os DataFrames com os dados de questoes, notas pessoais e notas gerais
 df_q = pd.read_pickle('dados-relatorio-alunos\data.pkl')
@@ -28,11 +35,9 @@ df_q['Sua resposta'] = df_q['Sua resposta'].str.upper()
 df_q['Gabarito'] = df_q['Gabarito'].str.upper()
 
 df_n = pd.read_pickle('dados-relatorio-alunos/acertos_aluno.pkl')
-df_n['Média Individual'] = df_n['Média Individual'].apply(lambda x: str(round(x,3)*100)+'%')
-df_n['Media Geral'] = df_n['Media Geral'].apply(lambda x: str(round(x,3)*100)+'%')
+df_n['Média Individual'] = df_n['Média Individual'].apply(lambda x: str(int(x*100))+'%')
+df_n['Media Geral'] = df_n['Media Geral'].apply(lambda x: str(int(x*100))+'%')
 
-# df_g = pd.read_pickle('df_notas_geral.pkl').rename(columns={'Nota':'Média geral'})
-# df_g['Média geral'] = df_g['Média geral'].apply(lambda x: str(round(x,1))+'%')
 
 # dados da redacao
 df_r = pd.read_pickle('dados-relatorio-alunos\dados_redacao.pkl')
@@ -123,7 +128,7 @@ for aluno in df_q.index.get_level_values(0).unique():
     
     df_n_aluno = df_n_aluno[['Matéria','Total de Acertos', 'Média Individual',  'Media Geral']]
     
-    #print(df_n_aluno)
+    # print(df_n_aluno)
 
     doc['notas'] = df_n_aluno.style.apply(
                 _color_table_every_other,
@@ -146,18 +151,17 @@ for aluno in df_q.index.get_level_values(0).unique():
 
     red_aluno = df_r.loc[aluno, :]
     # print(len(red_aluno))
-    #)
-    #red_aluno.loc[:, 'Nota'] = red_aluno['Nota']
-    #red_aluno.loc[:, 'Comentario'] = red_aluno['Comentario']
     
-    #red_aluno= red_aluno[['Criterio', 'Nota','Comentario']]
-    # df_q_aluno = df_q_aluno[['Questão','Sua resposta','Gabarito','assunto', 'dificuldade']]
-    # red_aluno
-    print(red_aluno)
-    # redacao = red_aluno.to_dict()
-    #print(redacao)
+    red_aluno["Criterio"] = red_aluno.index.get_level_values(0)
+    red_aluno.loc[:, 'Nota'] = (red_aluno['Nota']).astype(str)
+    red_aluno.loc[:, 'Comentario'] = red_aluno['Comentario']
+    
+    red_aluno= red_aluno[['Criterio', 'Nota','Comentario']]
+    
+    
+    # print(red_aluno)
     doc['redacao'] = red_aluno.style.apply(
-                _color_table_every_other,
+                _color_table_redacao,
                 axis=None
             ).set_properties(
                 **{'text-align':'center',
@@ -168,9 +172,8 @@ for aluno in df_q.index.get_level_values(0).unique():
                    'border-collapse':'collapse'}
             ).set_table_styles(
                 [{'props':[('color','#533884'), ('font-family','Roboto')]}]
-            ).render()
-    
-    
+            ).hide_index().render()
+
     # renderiza o html a partir do template e com as informações do dicionário
     html_out = template.render(doc)
     with open(f"html-alunos/{aluno.replace(' ', '_')}.html",'w') as file:
