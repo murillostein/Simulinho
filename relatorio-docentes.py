@@ -9,8 +9,9 @@ data = pd.read_pickle('dados-relatorio-alunos/data.pkl')
 
 st.title('Relatório Docentes')
 
-st.write('Olá Docente!')
-st.write("Este é o seu relatório do Simulinho 2021. Aqui você encontra dados sobre a prova geral e dados específicos para cada disciplina.")
+st.write('Olá Docente! Este é o seu **relatório do Simulinho 2021**.')
+st.write("Ele é dividido em **duas seções principais**. A primeira delas, apresenta dados gerais sobre toda a prova, estas informações são padronizadas para todas as disciplinas. A seção 2 apresenta dados **específicos para cada matéria**. Para selecionar qual matéria você deseja analisar os dados, basta selecioná-la na barra lateral esquerda.")
+st.write("Façam bom uso!")
 # ! dados gerais !
 
 # número de inscritos
@@ -24,7 +25,7 @@ media_pontuacao_total = round(pontuacao_total['Nota total'].mean(),1)
 
 # a media da % de acerto da prova é justamente a média de acerto, dividida pela quantidade total de pontos possíveis
 # como a redação vale 1000, e as questçoes objetivas 500, basta dividir por 500
-media_porcem_total = str(round(media_pontuacao_total / 1500, 1)*100) + '%'
+media_porcem_total = str(round(media_pontuacao_total / 1500, 3)*100) + '%'
 # media_porcem_total = media_porcem_total.astype()
 # print(media_porcem_total)
 st.header("**1. Dados sobre a Prova Geral**")
@@ -42,10 +43,10 @@ media_acertos_obj = media_acerto_materia['correcao'].mean()
 # print(media_acertos_obj)
 st.subheader("**1.1 Dados sobre as Questões Objetivas**")
 
-st.write("A média de acertos da prova objetiva foi: ", str(round(media_acertos_obj, 1)*100)+'%')
-st.write(pd.DataFrame({
-   'Média de acertos': [media_acertos_obj],
-}))
+st.write("A média geral de acertos da prova objetiva foi ", str(round(media_acertos_obj, 3)*100)+'%')
+#st.write(pd.DataFrame({
+ #  'Média de acertos': [media_acertos_obj],
+# }))
 # media geral de acertos por materia
 def get_media_a_m():
     path = 'dados-relatorio-docentes/media_acerto_materia.pkl'
@@ -72,10 +73,14 @@ media_acerto_materia = get_media_a_m()
 
 # gráfico com a média de acerto de cada matéria
 
-media_acerto_materia = media_acerto_materia.reset_index()
-media_acerto_materia = media_acerto_materia.set_index('correcao')
+# o grafico fica com os rotulos na horizontal com as duas linhas a seguir, mas, quando o codigo é upado no servidor do streamlit ele sai todo desconfigurado. 
+# caso queira testar para ver se não dá mais o bug, é so "descomentar" as duas linhas a seguir
 
-st.bar_chart(data=media_acerto_materia[["materia"]])
+# media_acerto_materia = media_acerto_materia.reset_index()
+# media_acerto_materia = media_acerto_materia.set_index('correcao')
+
+st.bar_chart(data=media_acerto_materia)
+st.write("Passando o mouse por cima do gráfico você pode identificar qual é a matéria e nota referentes a cada barra.")
 
 # media e % da redação
 media_redacao = pd.read_pickle('dados-relatorio-docentes/media_redacao.pkl')
@@ -84,7 +89,7 @@ media_redacao = pd.read_pickle('dados-relatorio-docentes/media_redacao.pkl')
 # tabela com os dados coletados acima
 st.subheader("**1.2 Dados sobre a Redação**")
 st.write(pd.DataFrame({
-    'Nota Média': media_redacao
+    'Nota Média': round(media_redacao,2)
 }))
 
 
@@ -117,7 +122,7 @@ st.write(pd.DataFrame({
 media_acerto_materia = get_media_a_m()
 media_acerto_materia = media_acerto_materia.reset_index()
 
-materia_escolhida = st.sidebar.selectbox("Escolha a materia", media_acerto_materia['materia'])
+materia_escolhida = st.sidebar.selectbox("**Escolha a matéria**", media_acerto_materia['materia'])
 
 dados_materia_escolhida = media_acerto_materia[(media_acerto_materia['materia'] == materia_escolhida)]
 
@@ -126,7 +131,7 @@ dados_materia_escolhida.set_index('materia',inplace=True)
 
 st.header("**2. Dados sobre a Matéria Selecionada**")
 
-
+st.write("Aqui você encontra dados sobre a matéria que foi selecionada na caixa localizada na aba lateral.")
 # st.write("A média em ", str(dados_materia_escolhida.index), " foi ", dados_materia_escolhida['correcao'])
 st.write(pd.DataFrame({
     "Média Acertos(em %)": dados_materia_escolhida['correcao']*100
@@ -147,7 +152,7 @@ questao_materia_escolhida = media_acerto_questao[(media_acerto_questao['materia'
 questao_materia_escolhida.set_index('questao',inplace=True)
 
 
-print(questao_materia_escolhida)
+# print(questao_materia_escolhida)
 # st.table(data=questao_materia_escolhida[['assunto','dificuldade', 'Média']])
 
 
@@ -166,7 +171,7 @@ grafico_questoes["media"] = grafico_questoes['correcao','Média']
 grafico_questoes.set_index('questao',inplace=True)
 
 st.bar_chart(data=grafico_questoes['media'])
-
+st.write("Dependendo das pontuações das questões, pode ser que o gráfico apresente **escalas diferentes para cada matéria**. Lembre de sempre olhar os valores do eixo vertical.")
 
 # questões separadas por materia e por assunto
 # #  tem o total de acertos, total de alunos que responderam e média de acerto
