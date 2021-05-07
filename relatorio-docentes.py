@@ -4,20 +4,22 @@ import streamlit as st
 import PIL
 
 data = pd.read_pickle('dados-relatorio-alunos/data.pkl')
-# 
-
 
 st.title('Relatório Docentes')
 
 st.write('Olá Docente! Este é o seu **relatório do Simulinho 2021**.')
 st.write("Ele é dividido em **duas seções principais**. A primeira delas, apresenta dados gerais sobre toda a prova, estas informações são padronizadas para todas as disciplinas. A seção 2 apresenta dados **específicos para cada matéria**. Para selecionar qual matéria você deseja analisar os dados, basta selecioná-la na barra lateral esquerda.")
 st.write("Façam bom uso!")
+
 # ! dados gerais !
+
+st.header("**1. Dados sobre a Prova Geral**")
 
 # número de inscritos
 # total_presentes = data.Index(['nome'])
 # print(total_presentes.value_counts())
 total_presentes = 12
+
 # media de pontuação total e porcentagem de acerto
 pontuacao_total = pd.read_pickle('dados-relatorio-alunos/pontuacao_total.pkl')
 
@@ -26,9 +28,7 @@ media_pontuacao_total = round(pontuacao_total['Nota total'].mean(),1)
 # a media da % de acerto da prova é justamente a média de acerto, dividida pela quantidade total de pontos possíveis
 # como a redação vale 1000, e as questçoes objetivas 500, basta dividir por 500
 media_porcem_total = str(round(media_pontuacao_total / 1500, 3)*100) + '%'
-# media_porcem_total = media_porcem_total.astype()
-# print(media_porcem_total)
-st.header("**1. Dados sobre a Prova Geral**")
+
 dados = {
     'Total de Inscritos': [total_presentes],
     'Média de Pontuação Total':[media_pontuacao_total],
@@ -36,18 +36,19 @@ dados = {
 }
 st.table(data=dados)
 st.write(pd.DataFrame(dados))
+
+
+st.subheader("**1.1 Dados sobre as Questões Objetivas**")
+
 # media e % das objetivas 
 media_acerto_materia = pd.read_pickle('dados-relatorio-docentes/media_acerto_materia.pkl')
 media_acertos_obj = media_acerto_materia['correcao'].mean()
 
-# print(media_acertos_obj)
-st.subheader("**1.1 Dados sobre as Questões Objetivas**")
-
 st.write("A média geral de acertos da prova objetiva foi ", str(round(media_acertos_obj, 3)*100)+'%')
-#st.write(pd.DataFrame({
- #  'Média de acertos': [media_acertos_obj],
-# }))
+
+
 # media geral de acertos por materia
+
 def get_media_a_m():
     path = 'dados-relatorio-docentes/media_acerto_materia.pkl'
     return pd.read_pickle(path)
@@ -58,18 +59,14 @@ st.markdown("**Média de acertos por matéria (em %)**")
 media_acerto_materia = get_media_a_m()
 media_acerto_materia = media_acerto_materia.reset_index()
 
-
 # para nao mostrar on indices do dataframe na tabela do streamlit, podemos mudar o indice
 media_acerto_materia.set_index('materia',inplace=True)
-
 
 st.write(pd.DataFrame({
    'Média de acertos': media_acerto_materia['correcao']*100
 }))
 
 media_acerto_materia = get_media_a_m()
-
-# print(media_acerto_materia)
 
 # gráfico com a média de acerto de cada matéria
 
@@ -83,8 +80,8 @@ st.bar_chart(data=media_acerto_materia)
 st.write("Passando o mouse por cima do gráfico você pode identificar qual é a matéria e nota referentes a cada barra.")
 
 # media e % da redação
+
 media_redacao = pd.read_pickle('dados-relatorio-docentes/media_redacao.pkl')
-# print(media_redacao)
 
 # tabela com os dados coletados acima
 st.subheader("**1.2 Dados sobre a Redação**")
@@ -105,24 +102,16 @@ st.write(pd.DataFrame({
 }))
 
 
-
-
-
 #  ! dados específicos por matéria  ! 
-
-
-
-
-#### para cada materia
 
 # questões separadas por materia e por assunto
 # # tem o total de acertos, total de alunos que responderam e média de acerto
 
-# print(media_acerto_materia)
+
 media_acerto_materia = get_media_a_m()
 media_acerto_materia = media_acerto_materia.reset_index()
 
-materia_escolhida = st.sidebar.selectbox("**Escolha a matéria**", media_acerto_materia['materia'])
+materia_escolhida = st.sidebar.selectbox("Escolha a matéria", media_acerto_materia['materia'])
 
 dados_materia_escolhida = media_acerto_materia[(media_acerto_materia['materia'] == materia_escolhida)]
 
